@@ -4,7 +4,7 @@
   "main": "main.tf",
   "name": "terraform-common-labels",
   "provider": "common",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "scripts": {
     "version": "lerna exec --concurrency 1 --scope $npm_package_name -- node \"${LERNA_ROOT_PATH}/.scripts/publish.js\""
   }
