@@ -154,7 +154,11 @@ E.g.:
 ```hcl
 module "labels" {
   source  = "app.terraform.io/igorbrites/labels/common"
-  version = "2.1.0"
+  version = "2.2.0"
   # insert required variables here
 }
 ```
+
+And this is how it looks on Terraform Registry:
+
+![](https://user-images.githubusercontent.com/1479917/161577057-20b473a9-6915-43a4-9359-8d5066ea2b11.png)
