@@ -1,0 +1,4 @@
+nodejs 16.10.0
+terraform 1.0.9
+terraform-docs 0.16.0
+tflint 0.33.0

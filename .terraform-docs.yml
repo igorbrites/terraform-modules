@@ -1,0 +1,18 @@
+formatter: "markdown table"
+
+version: ">= 0.16.0"
+
+sections:
+  show:
+  - all
+
+output:
+  file: README.md 
+
+output-values:
+  enabled: false
+  from: ""
+
+sort:
+  enabled: true
+  by: name

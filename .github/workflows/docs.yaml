@@ -1,0 +1,34 @@
+name: Generate Terraform Docs
+on: [pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  modules:
+    uses: ./.github/workflows/modules.yaml
+    with:
+      ref: ${{ github.event.pull_request.head.ref }}
+
+  docs:
+    runs-on: ubuntu-latest
+    needs: modules
+    if: ${{ needs.modules.outputs.modules != '[]' }}
+    strategy:
+      fail-fast: true
+      matrix:
+        module: ${{ fromJson(needs.modules.outputs.modules) }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+    - uses: terraform-docs/gh-actions@v1.0.0
+      env:
+        ACTIONS_STEP_DEBUG: "true"
+      with:
+        git-push: "true"
+        output-file: README.md
+        working-dir: ${{ matrix.module }}
+        config-file: .terraform-docs.yml
+        git-commit-message: 'docs(${{ matrix.module }}): generating terraform-docs'

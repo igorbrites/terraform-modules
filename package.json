@@ -1,0 +1,17 @@
+{
+  "name": "terraform-modules",
+  "type": "module",
+  "devDependencies": {
+    "@commitlint/cli": "^13.2.1",
+    "@commitlint/config-conventional": "^13.2.0",
+    "husky": "^7.0.0",
+    "json-schema": "^0.4.0",
+    "lerna-clean-changelogs-cli": "^2.0.6",
+    "lerna": "^4.0.0",
+    "node-fetch": "^3.0.0"
+  },
+  "scripts": {
+    "version": "npx lernacleanchangelog '**'",
+    "prepare": "husky install"
+  }
+}

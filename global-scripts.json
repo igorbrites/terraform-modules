@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "version": "lerna exec --concurrency 1 --scope $npm_package_name -- node \"${LERNA_ROOT_PATH}/.scripts/publish.js\""
+  }
+}

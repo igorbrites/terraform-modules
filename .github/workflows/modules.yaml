@@ -1,0 +1,31 @@
+name: Modules
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Reference to be checked out
+        required: true
+        type: string
+    outputs:
+      modules:
+        description: JSON array of modified modules
+        value: ${{ jobs.modules.outputs.modules }}
+
+jobs:
+  modules:
+    runs-on: ubuntu-latest
+    outputs:
+      modules: ${{ steps.modules.outputs.modules }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        ref: ${{ inputs.ref }}
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+    - run: npm ci --unsafe-perm
+    - id: modules
+      run: |
+        modules=$(npx lerna changed --include-merged-tags --json | jq -c '[.[] | .location]' | sed "s~$GITHUB_WORKSPACE/~~g")
+        echo "::set-output name=modules::${modules:-[]}"

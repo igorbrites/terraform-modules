@@ -1,0 +1,26 @@
+name: Create Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  lerna-release:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ORGANIZATION_NAME: igorbrites
+      TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.ADMIN_TOKEN }}
+    - run: |
+        git config user.name igorbrites
+        git config user.email igorbrites@users.noreply.github.com
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+    - run: npm ci --unsafe-perm
+    - run: LERNA_ROOT_PATH="$GITHUB_WORKSPACE" npx lerna version --yes

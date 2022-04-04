@@ -1,0 +1,64 @@
+name: Validate Modules
+on: [pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.ref }}
+    - uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
+    - uses: github/super-linter/slim@v4
+      env:
+        DEFAULT_BRANCH: main
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        IGNORE_GITIGNORED_FILES: true
+        MULTI_STATUS: false
+        VALIDATE_ALL_CODEBASE: false
+        VALIDATE_JSCPD: false
+        VALIDATE_KUBERNETES_KUBEVAL: false
+        VALIDATE_NATURAL_LANGUAGE: false
+
+  modules:
+    uses: ./.github/workflows/modules.yaml
+    with:
+      ref: ${{ github.event.pull_request.head.ref }}
+
+  validate-module:
+    runs-on: ubuntu-latest
+    needs: modules
+    if: ${{ needs.modules.outputs.modules != '[]' }}
+    strategy:
+      fail-fast: true
+      matrix:
+        module: ${{ fromJson(needs.modules.outputs.modules) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.module }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+    - uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
+    - run: terraform init -backend=false
+    - run: terraform fmt -check -diff
+    - run: terraform validate
+
+  validate-all:
+    runs-on: ubuntu-latest
+    needs: validate-module
+    steps:
+    - run: echo "All validations passed"
+      if: ${{ needs.validate-module.result == 'success' }}
+    - run: echo "Validations failed. See the checks above for more info." && exit 1
+      if: ${{ needs.validate-module.result != 'success' }}

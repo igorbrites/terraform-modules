@@ -1,0 +1,12 @@
+{
+  "command": {
+    "version": {
+      "conventionalCommits": true,
+      "createRelease": "github",
+      "message": "chore(release): publish [skip ci]"
+    }
+  },
+  "ignoreChanges": ["**/*.md", "**/package*.json", "**/LICENSE", ".template"],
+  "packages": ["modules/**/*"],
+  "version": "independent"
+}

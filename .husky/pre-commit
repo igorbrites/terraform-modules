@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+# shellcheck disable=SC1091
+. "$(dirname "$0")/_/husky.sh"
+
+FILES=$(terraform fmt -recursive)
+if [ -n "${FILES}" ]; then
+  git add "${FILES//$'\n'/ }"
+fi

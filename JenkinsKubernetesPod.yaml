@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: terraform-modules
+spec:
+  nodeSelector:
+    spot: "true"
+  containers:
+    - name: jnlp
+      image: 12345678910.dkr.ecr.us-east-1.amazonaws.com/kubernetes-agent:1.1
+      tty: true
+      env:
+        - name: CONTAINER_ENV_VAR
+          value: jnlp
+      workingDir: /home/jenkins
+      resources:
+        limits:
+          cpu: 800m
+          memory: 1Gi
+        requests:
+          cpu: 500m
+          memory: 500Mi
+
+    - name: node
+      image: node:16.12.0-alpine3.14
+      command:
+        - sleep
+      args:
+        - 99d
+      tty: true
+      env:
+        - name: CONTAINER_ENV_VAR
+          value: node
+      workingDir: /home/jenkins
+      resources:
+        limits:
+          cpu: 1500m
+          memory: 1.5Gi
+        requests:
+          cpu: 500m
+          memory: 500Mi
+
+    - name: terraform
+      image: hashicorp/terraform:1.0.9
+      command:
+        - sleep
+      args:
+        - 99d
+      tty: true
+      env:
+        - name: CONTAINER_ENV_VAR
+          value: terraform
+      workingDir: /home/jenkins
+      resources:
+        limits:
+          cpu: 1500m
+          memory: 1.5Gi
+        requests:
+          cpu: 500m
+          memory: 500Mi
+
+    - name: linter
+      image: github/super-linter:slim-v4
+      command:
+        - sleep
+      args:
+        - 99d
+      tty: true
+      env:
+        - name: CONTAINER_ENV_VAR
+          value: linter
+        - name: IGNORE_GITIGNORED_FILES
+          value: "true"
+        - name: RUN_LOCAL
+          value: "true"
+        - name: VALIDATE_ALL_CODEBASE
+          value: "false"
+        - name: VALIDATE_JSCPD
+          value: "false"
+        - name: VALIDATE_KUBERNETES_KUBEVAL
+          value: "false"
+        - name: VALIDATE_NATURAL_LANGUAGE
+          value: "false"
+      workingDir: /home/jenkins
+      resources:
+        limits:
+          cpu: 1500m
+          memory: 1.5Gi
+        requests:
+          cpu: 500m
+          memory: 500Mi
+
+    - name: terraform-docs
+      image: quay.io/terraform-docs/terraform-docs:0.16.0
+      command:
+        - sleep
+      args:
+        - 99d
+      tty: true
+      env:
+        - name: CONTAINER_ENV_VAR
+          value: terraform-docs
+      workingDir: /home/jenkins
+      resources:
+        limits:
+          cpu: 1500m
+          memory: 1.5Gi
+        requests:
+          cpu: 500m
+          memory: 500Mi

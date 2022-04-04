@@ -1,0 +1,11 @@
+{
+  "author": "your-name",
+  "description": "Description of your module",
+  "main": "main.tf",
+  "name": "my-module",
+  "provider": "my-provider",
+  "version": "0.0.1",
+  "scripts": {
+    "version": "lerna exec --concurrency 1 --scope $npm_package_name -- node \"${LERNA_ROOT_PATH}/.scripts/publish.js\""
+  }
+}
